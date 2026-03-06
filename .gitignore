@@ -1,8 +1,8 @@
-# Ignore the environment variables file (IMPORTANT)
-.env
-*.env
-.env.local
-
-# Ignore the "heavy" dependencies folder (reinstallable via npm)
+# --- API / Backend ---
 node_modules/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 

@@ -1,10 +1,12 @@
 import User from "../models/userModel.js";
+import Message from "../models/messageModel.js";
+import  cloudinary from "../lib/cloudinary.js";
 
 
 export const  getUser = async (req, res) => {
     try {
       const loggedInUser = req.user._id;
-        const filteredUsers = await User.findById({_id:{ $ne: loggedInUser }}).select("-password");
+        const filteredUsers = await User.find({_id:{ $ne: loggedInUser }}).select("-password");
         res.status(200).json(filteredUsers);
     } catch (error) {
         console.error("Error fetching users", error);

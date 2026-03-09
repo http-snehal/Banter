@@ -6,11 +6,16 @@ import cookieParser from 'cookie-parser';
 import {connectDB} from './src/lib/db.js';
 import { protectRoute } from './src/middleware/protectRoute.js';
 import messageRoutes from './src/routes/messageRoutes.js';
+import cors from 'cors';
 
 
 const app = express();
 dotenv.config();
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 

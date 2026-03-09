@@ -15,26 +15,28 @@ import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  const { authUser, checkAuth, isCheckingAuth, onlineUsers } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   const { theme } = useThemeStore();
-
-  console.log({ onlineUsers });
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log({ authUser });
-
   if (isCheckingAuth && !authUser)
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="size-10 animate-spin" />
+      <div className="flex items-center justify-center h-screen animated-bg">
+        <div className="flex flex-col items-center gap-4">
+          <div className="relative">
+            <Loader className="size-10 animate-spin text-indigo-400" />
+            <div className="absolute inset-0 blur-xl bg-indigo-500/30 rounded-full" />
+          </div>
+          <p className="text-white/50 text-sm font-medium tracking-wide">Loading Banter...</p>
+        </div>
       </div>
     );
 
   return (
-    <div data-theme={theme}>
+    <div data-theme={theme} className="min-h-screen">
       <Navbar />
 
       <Routes>
@@ -45,7 +47,19 @@ const App = () => {
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
       </Routes>
 
-      <Toaster />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: 'rgba(30, 30, 50, 0.95)',
+            backdropFilter: 'blur(10px)',
+            color: '#e2e8f0',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '12px',
+            fontSize: '14px',
+          },
+        }}
+      />
     </div>
   );
 };

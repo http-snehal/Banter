@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { Camera, Mail, User } from "lucide-react";
+import { Camera, Mail, User, Calendar, Shield } from "lucide-react";
 
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
@@ -11,45 +11,46 @@ const ProfilePage = () => {
     if (!file) return;
 
     const reader = new FileReader();
-
     reader.readAsDataURL(file);
-
     reader.onload = async () => {
       const base64Image = reader.result;
       setSelectedImg(base64Image);
-      await updateProfile({ profilePic: base64Image });
+      await updateProfile({ profilePicture: base64Image });
     };
   };
 
   return (
-    <div className="h-screen pt-20">
-      <div className="max-w-2xl mx-auto p-4 py-8">
-        <div className="bg-base-300 rounded-xl p-6 space-y-8">
+    <div className="min-h-screen pt-20 pb-10 bg-base-200">
+      <div className="max-w-2xl mx-auto p-4">
+        <div className="glass-card rounded-2xl p-8 space-y-8 fade-in-up">
+          {/* Header */}
           <div className="text-center">
-            <h1 className="text-2xl font-semibold ">Profile</h1>
-            <p className="mt-2">Your profile information</p>
+            <h1 className="text-2xl font-bold gradient-text">Profile</h1>
+            <p className="mt-2 text-base-content/40 text-sm">Your profile information</p>
           </div>
 
-          {/* avatar upload section */}
-
+          {/* Avatar */}
           <div className="flex flex-col items-center gap-4">
-            <div className="relative">
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full opacity-30 blur group-hover:opacity-50 transition-opacity" />
               <img
-                src={selectedImg || authUser.profilePic || "/avatar.png"}
+                src={selectedImg || authUser.profilePicture || "/avatar.png"}
                 alt="Profile"
-                className="size-32 rounded-full object-cover border-4 "
+                className="relative size-28 rounded-full object-cover ring-4 ring-base-100"
               />
               <label
                 htmlFor="avatar-upload"
                 className={`
-                  absolute bottom-0 right-0 
-                  bg-base-content hover:scale-105
-                  p-2 rounded-full cursor-pointer 
-                  transition-all duration-200
+                  absolute bottom-1 right-1
+                  w-8 h-8 rounded-full cursor-pointer
+                  bg-gradient-to-r from-indigo-500 to-purple-600
+                  flex items-center justify-center
+                  shadow-lg shadow-indigo-500/30
+                  hover:scale-110 transition-transform
                   ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}
                 `}
               >
-                <Camera className="w-5 h-5 text-base-200" />
+                <Camera className="w-4 h-4 text-white" />
                 <input
                   type="file"
                   id="avatar-upload"
@@ -60,40 +61,60 @@ const ProfilePage = () => {
                 />
               </label>
             </div>
-            <p className="text-sm text-zinc-400">
-              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+            <p className="text-xs text-base-content/30">
+              {isUpdatingProfile ? "Uploading..." : "Click the camera to update your photo"}
             </p>
           </div>
 
-          <div className="space-y-6">
-            <div className="space-y-1.5">
-              <div className="text-sm text-zinc-400 flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Full Name
+          {/* Info Fields */}
+          <div className="space-y-4">
+            <div className="glass-card rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                  <User className="w-4 h-4 text-indigo-400" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-base-content/40 mb-0.5">Full Name</p>
+                  <p className="text-sm font-medium truncate">{authUser?.fullName}</p>
+                </div>
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.fullName}</p>
             </div>
 
-            <div className="space-y-1.5">
-              <div className="text-sm text-zinc-400 flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                Email Address
+            <div className="glass-card rounded-xl p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-4 h-4 text-purple-400" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-base-content/40 mb-0.5">Email Address</p>
+                  <p className="text-sm font-medium truncate">{authUser?.email}</p>
+                </div>
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.email}</p>
             </div>
           </div>
 
-          <div className="mt-6 bg-base-300 rounded-xl p-6">
-            <h2 className="text-lg font-medium  mb-4">Account Information</h2>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center justify-between py-2 border-b border-zinc-700">
-                <span>Member Since</span>
-                <span>{authUser.createdAt?.split("T")[0]}</span>
+          {/* Account Info */}
+          <div className="glass-card rounded-xl p-5 space-y-3">
+            <h2 className="text-sm font-semibold text-base-content/70 mb-3">Account Information</h2>
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-base-content/50">
+                <Calendar className="w-4 h-4" />
+                <span className="text-sm">Member Since</span>
               </div>
-              <div className="flex items-center justify-between py-2">
-                <span>Account Status</span>
-                <span className="text-green-500">Active</span>
+              <span className="text-sm font-medium">{authUser.createdAt?.split("T")[0]}</span>
+            </div>
+
+            <div className="h-px bg-base-content/5" />
+
+            <div className="flex items-center justify-between py-2">
+              <div className="flex items-center gap-2 text-base-content/50">
+                <Shield className="w-4 h-4" />
+                <span className="text-sm">Account Status</span>
               </div>
+              <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                Active
+              </span>
             </div>
           </div>
         </div>

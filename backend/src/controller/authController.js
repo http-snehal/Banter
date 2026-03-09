@@ -1,6 +1,7 @@
 import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
+import cloudinary from "../lib/cloudinary.js";
 
 
 export const signup = async (req, res) => {
@@ -105,7 +106,7 @@ export const updateProfile = async (req, res) => {
 
     const uploadResponse = await cloudinary.uploader.upload(profilePicture)
     const updatedUser = await User.findByIdAndUpdate(userID, {profilePicture: uploadResponse.secure_url}, {new: true});
-    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Update profile error", error);
     res.status(500).json({ message: "Server error" });
